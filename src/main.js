@@ -772,39 +772,93 @@ function createTray() {
 
 // Configure auto updater
 function configureAutoUpdater() {
-  // Disable auto download
-  autoUpdater.autoDownload = false;
-  
+  if (isDev) {
+    console.log('Development mode, auto-updater disabled.');
+    return;
+  }
+
+  console.log('Configuring auto-updater...');
+  autoUpdater.logger = require('electron-log');
+  autoUpdater.logger.transports.file.level = 'info';
+  autoUpdater.autoDownload = true; // Enable auto-download
+  autoUpdater.autoInstallOnAppQuit = true; // Install on quit if downloaded
+
   autoUpdater.on('checking-for-update', () => {
-    console.log('Checking for updates...');
+    console.log('Checking for update...');
+    // Optional: send message to titlebar if needed
+    // if (mainWindow) {
+    //   mainWindow.webContents.send('update-status', { message: 'Checking for updates...' });
+    // }
   });
-  
+
   autoUpdater.on('update-available', (info) => {
     console.log('Update available:', info);
-    updateAvailable = true;
     if (mainWindow) {
-      mainWindow.webContents.send('update-available', true);
+      mainWindow.webContents.send('update-available-from-main', info); // IPC to Titlebar
     }
+    if (splashWindow && !splashWindow.isDestroyed()) {
+      splashWindow.webContents.send('splash-update-status', { 
+        message: `Update v${info.version} found, downloading...`, 
+        version: info.version 
+      });
+    }
+    updateAvailable = true;
+    new Notification({
+      title: APP_NAME,
+      body: `A new version (${info.version}) is available. Downloading now...`
+    }).show();
   });
-  
-  autoUpdater.on('update-not-available', (info) => {
-    console.log('No update available:', info);
+
+  autoUpdater.on('update-not-available', () => {
+    console.log('Update not available.');
+    // Optional: send message to titlebar if needed
+    // if (mainWindow) {
+    //   mainWindow.webContents.send('update-status', { message: 'You are on the latest version.' });
+    // }
   });
-  
+
   autoUpdater.on('error', (err) => {
     console.error('Error in auto-updater:', err);
+    // Optional: send message to titlebar if needed
+    // if (mainWindow) {
+    //   mainWindow.webContents.send('update-status', { message: `Error in auto-updater: ${err.message}`, isError: true });
+    // }
   });
-  
+
   autoUpdater.on('download-progress', (progressObj) => {
-    console.log(`Download progress: ${progressObj.percent}%`);
+    let log_message = `Download speed: ${progressObj.bytesPerSecond}`;
+    log_message = `${log_message} - Downloaded ${progressObj.percent.toFixed(2)}%`;
+    log_message = `${log_message} (${progressObj.transferred}/${progressObj.total})`;
+    console.log(log_message);
+    if (splashWindow && !splashWindow.isDestroyed()) {
+      splashWindow.webContents.send('splash-update-progress', { 
+        percent: progressObj.percent 
+      });
+    }
+    // Optional: send progress to titlebar if you want a progress bar there
+    // if (mainWindow) {
+    //    mainWindow.webContents.send('update-download-progress', progressObj);
+    // }
   });
-  
+
   autoUpdater.on('update-downloaded', (info) => {
     console.log('Update downloaded:', info);
     if (mainWindow) {
-      mainWindow.webContents.send('update-downloaded', true);
+      mainWindow.webContents.send('update-downloaded-from-main', info); // IPC to Titlebar
     }
+    const notification = new Notification({
+      title: APP_NAME,
+      body: `Version ${info.version} has been downloaded and is ready to install.`,
+      actions: [{ type: 'button', text: 'Restart and Install' }]
+    });
+    notification.on('action', () => {
+      autoUpdater.quitAndInstall();
+    });
+    notification.show();
   });
+
+  // Initial check for updates
+  autoUpdater.checkForUpdatesAndNotify();
 }
 
 // Check for updates from GitHub repository
@@ -1012,6 +1066,11 @@ app.whenReady().then(() => {
   ipcMain.handle('set-selected-microphone', (event, deviceId) => {
     store.set('selectedMicrophone', deviceId);
     return true;
+  });
+
+  // Listen for a request from the titlebar to quit and install the update
+  ipcMain.on('quit-and-install-update', () => {
+    autoUpdater.quitAndInstall();
   });
 
   ipcMain.handle('set-selected-camera', (event, deviceId) => {

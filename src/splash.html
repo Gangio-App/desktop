@@ -214,6 +214,9 @@
         
         // Set version from electron
         window.addEventListener('DOMContentLoaded', () => {
+            const loadingStatusText = document.getElementById('loading-status-text'); // Define this early
+            const versionText = document.getElementById('version'); // Assuming versionText is also defined here or globally
+
             // Check if electron API is available
             if (window.electronAPI && window.electronAPI.getAppVersion) {
                 window.electronAPI.getAppVersion().then(version => {
@@ -223,6 +226,23 @@
             
             // Start showing random fun facts
             showRandomFunFact();
+
+            // Listen for update status from main process for splash screen
+            window.electronAPI.on('splash-update-status', (data) => {
+                if (loadingStatusText && data && data.message) {
+                    console.log('Splash received splash-update-status:', data);
+                    loadingStatusText.textContent = data.message;
+                }
+            });
+
+            window.electronAPI.on('splash-update-progress', (data) => {
+                if (loadingStatusText && data && typeof data.percent === 'number') {
+                    console.log('Splash received splash-update-progress:', data);
+                    const percentFixed = data.percent.toFixed(1);
+                    loadingStatusText.textContent = `Downloading update: ${percentFixed}%`;
+                }
+            });
+
         });
         
         // Update progress function
@@ -266,7 +286,8 @@
                 }
             }
         }
-        
+        /* IPC Listeners moved inside window.electronAPI check */
+
         // Start progress animation with a slight delay
         setTimeout(updateProgress, 500);
     </script>

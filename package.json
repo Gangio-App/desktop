@@ -1,6 +1,6 @@
 {
   "name": "gangio-desktop",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Gangio Desktop Application",
   "author": {
     "name": "Gangio",
@@ -111,8 +111,8 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "korybantes",
-        "repo": "gangio-legacy",
+        "owner": "Gangio-App",
+        "repo": "desktop",
         "releaseType": "release"
       }
     ]
