@@ -30,7 +30,6 @@ This Electron-based desktop application provides a premium native desktop experi
 
 - Website: [https://gangio.pro](https://gangio.pro)
 - GitHub: [@korybantes](https://github.com/korybantes)
-- Contact: support@gangio.vercel.app
 
 ### Prerequisites
 
