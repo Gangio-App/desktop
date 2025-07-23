@@ -2,9 +2,9 @@
 
 A modern desktop client for the Gangio web application with enhanced features and a beautiful UI.
 
-[![GitHub license](https://img.shields.io/github/license/korybantes/gangio-legacy)](https://github.com/korybantes/gangio-legacy/blob/main/LICENSE)
-[![GitHub release](https://img.shields.io/github/v/release/korybantes/gangio-legacy)](https://github.com/Gangio-App/desktop/releases/latest)
-[![GitHub issues](https://img.shields.io/github/issues/korybantes/gangio-legacy)](https://github.com/korybantes/gangio-legacy/issues)
+[![GitHub license](https://img.shields.io/github/license/Gangio-App/desktop)](https://github.com/Gangio-App/desktop/blob/main/LICENSE)
+[![GitHub release](https://img.shields.io/github/v/release/Gangio-App/desktop)](https://github.com/Gangio-App/desktop/releases/latest)
+[![GitHub issues](https://img.shields.io/github/issues/Gangio-App/desktop)](https://github.com/korybantes/Gangio-App/desktop/issues)
 
 ## Overview
 
