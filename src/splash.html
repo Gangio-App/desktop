@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gangio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tiny5&display=swap');
+    </style>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #0f0f13;
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+            color: #fff;
+        }
+
+        .splash-container {
+            display: flex;
+            background-color: rgba(15, 15, 19, 0.3); /* More transparent for better effect visibility */
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            backdrop-filter: blur(8px); /* Reduced blur for better effect visibility */
+            -webkit-backdrop-filter: blur(8px);
+            border: none;
+            margin: 0;
+            padding: 0;
+            z-index: 10; /* Ensure it's above the background effect */
+        }
+
+        .splash-left { /* MODIFIED for full screen and centered content */
+            width: 100%;
+            height: 100%;
+            background-color: transparent; /* Changed to transparent to see the effect */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content horizontally */
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+            z-index: 20;
+        }
+        
+        .tiny5-regular {
+            font-family: "Tiny5", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .logo {
+            font-size: 72px;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, #34d399, #14b8a6);
+            --tw-gradient-from: #34d399;
+            --tw-gradient-to: #14b8a6;
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(52, 211, 153, 0.5); /* Added glow */
+            z-index: 30;
+        }
+
+        .loading-text {
+            font-size: 36px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 36px;
+            max-width: 500px;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Added shadow for readability */
+            z-index: 30;
+        }
+
+        .status-text {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.8); /* Brighter for better visibility */
+            margin-bottom: 36px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Added shadow for readability */
+            z-index: 30;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.2); /* Slightly brighter */
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            z-index: 30;
+            position: relative;
+            box-shadow: 0 0 15px rgba(52, 211, 153, 0.3); /* Added glow */
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #34d399, #14b8a6);
+            border-radius: 4px;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 10px rgba(52, 211, 153, 0.7); /* Added glow */
+        }
+
+        .fun-fact {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6); /* Brighter for better visibility */
+            margin-top: 5px;
+            margin-bottom: 25px;
+            font-style: italic;
+            max-width: 400px;
+            text-align: center;
+            align-self: center;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Added shadow for readability */
+            z-index: 30;
+        }
+
+        .version-text { /* MODIFIED for glow and centering */
+            font-size: 22px; /* Increased size */
+            color: #fff;
+            position: absolute;
+            bottom: 30px; /* Adjusted positioning */
+            left: 50%;
+            transform: translateX(-50%); /* Horizontally centered */
+            text-shadow: 
+                0 0 5px rgba(255, 255, 255, 0.7),
+                0 0 10px rgba(52, 211, 153, 0.6),
+                0 0 15px rgba(52, 211, 153, 0.5),
+                0 0 20px rgba(52, 211, 153, 0.4);
+            z-index: 30; /* Ensure it's above other elements if needed */
+        }
+
+        /* Background container for Vanta effect */
+        #vanta-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Removed glow divs as they're replaced by the Vanta effect */
+    </style>
+</head>
+<body>
+    <!-- Vanta.js background container -->
+    <div id="vanta-background"></div>
+    
+    <div class="splash-container">
+        <div class="splash-left">
+            <!-- Removed glow divs as they're replaced by the Vanta effect -->
+            <div id="fun-fact" class="fun-fact">Fun fact: We almost called ourselves Wyvern</div>
+            <div class="logo tiny5-regular">Gangio</div>
+            <div class="loading-text">Hold on tight while we're loading your adventure...</div>
+			<div id="loading-status-text" class="status-text"></div>
+            <div id="status" class="status-text">CONNECTING</div>
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <div id="version" class="version-text">Version 0.1.1</div>
+        </div>
+    </div>
+
+    <!-- Three.js and Vanta.js scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.halo.min.js"></script>
+    <script>
+        // Initialize Vanta.js halo effect when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            VANTA.HALO({
+                el: "#vanta-background",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                baseColor: 0x0f0f13,
+                backgroundColor: 0x0f0f13,
+                amplitudeFactor: 1.20,
+                size: 1.50,
+                xOffset: 0.10,
+                yOffset: 0.10
+            });
+        });
+    </script>
+
+    <script>
+        // Auto-detect language and load translations
+        const lang = (navigator.language || navigator.userLanguage).toLowerCase().startsWith('tr') ? 'tr' : 'en';
+        fetch(`locales/${lang}.json`)
+            .then(response => response.json())
+            .then(strings => {
+                document.querySelector('.logo').textContent = 'Gangio';
+                document.querySelector('.loading-text').textContent = strings.hold_on_loading;
+                document.getElementById('status').textContent = strings.connecting;
+                document.getElementById('version').textContent = `${strings.current_version} 0.1.1`;
+                // Fun facts
+                const funFacts = [
+                    strings.fun_fact_1, strings.fun_fact_2, strings.fun_fact_3, strings.fun_fact_4,
+                    strings.fun_fact_5, strings.fun_fact_6, strings.fun_fact_7, strings.fun_fact_8, strings.fun_fact_9
+                ];
+                function showRandomFunFact() {
+                    const randomIndex = Math.floor(Math.random() * funFacts.length);
+                    document.getElementById('fun-fact').textContent = funFacts[randomIndex];
+                    setTimeout(showRandomFunFact, 5000);
+                }
+                showRandomFunFact();
+                // Progress status
+                window.updateSplashStatus = function(progress) {
+                    if (progress > 85) {
+                        document.getElementById('status').textContent = strings.almost_ready;
+                    } else if (progress > 65) {
+                        document.getElementById('status').textContent = strings.checking_for_updates;
+                    } else if (progress > 40) {
+                        document.getElementById('status').textContent = strings.loading_resources;
+                    } else if (progress > 10) {
+                        document.getElementById('status').textContent = strings.connecting;
+                    }
+                };
+            });
+    </script>
+
+    <script>
+        // Get elements
+        const statusText = document.getElementById('status');
+        const progressBar = document.getElementById('progress-bar');
+        const versionText = document.getElementById('version');
+        const funFactElement = document.getElementById('fun-fact');
+        let progress = 0;
+        
+        // Random fun facts about the app
+        const funFacts = [
+            "Fun fact: We almost called ourselves Wyvern",
+            "Fun fact: Our first prototype was built in just 48 hours",
+            "Fun fact: The app contains over 130,000 lines of code",
+            "Fun fact: Our team spans 5 different time zones",
+            "Fun fact: The name 'Gangio' was inspired by a mythical creature",
+            "Fun fact: We've fixed over 1,500 bugs since our first release",
+            "Fun fact: Our app uses AI to enhance your experience",
+            "Fun fact: The first version was coded entirely on a laptop during a road trip",
+            "Fun fact: Our logo went through 17 different designs",
+            "Fun fact: We celebrate each release with a virtual pizza party"
+        ];
+        
+        // Display a random fun fact
+        function showRandomFunFact() {
+            const randomIndex = Math.floor(Math.random() * funFacts.length);
+            funFactElement.textContent = funFacts[randomIndex];
+            
+            // Change fun fact every 5 seconds
+            setTimeout(showRandomFunFact, 5000);
+        }
+        
+        // Set version from electron
+        window.addEventListener('DOMContentLoaded', () => {
+            const loadingStatusText = document.getElementById('loading-status-text'); // Define this early
+            const versionText = document.getElementById('version'); // Assuming versionText is also defined here or globally
+
+            // Check if electron API is available
+            if (window.electronAPI && window.electronAPI.getAppVersion) {
+                window.electronAPI.getAppVersion().then(version => {
+                    versionText.textContent = `Version ${version}`;
+                });
+            }
+            
+            // Start showing random fun facts
+            showRandomFunFact();
+
+            // Listen for update status from main process for splash screen
+            window.electronAPI.on('splash-update-status', (data) => {
+                if (loadingStatusText && data && data.message) {
+                    console.log('Splash received splash-update-status:', data);
+                    loadingStatusText.textContent = data.message;
+                }
+            });
+
+            window.electronAPI.on('splash-update-progress', (data) => {
+                if (loadingStatusText && data && typeof data.percent === 'number') {
+                    console.log('Splash received splash-update-progress:', data);
+                    const percentFixed = data.percent.toFixed(1);
+                    loadingStatusText.textContent = `Downloading update: ${percentFixed}%`;
+                }
+            });
+
+        });
+        
+        // Update progress function
+        function updateProgress() {
+            if (progress < 100) {
+                // Slower progress for a more deliberate experience
+                progress += Math.random() * 5 + 2;
+                if (progress > 100) progress = 100;
+                
+                // Update progress bar width
+                progressBar.style.width = `${progress}%`;
+                
+                // Update status text based on progress
+                if (progress > 85) {
+                    statusText.textContent = 'ALMOST READY';
+                } else if (progress > 65) {
+                    statusText.textContent = 'CHECKING FOR UPDATES';
+                } else if (progress > 40) {
+                    statusText.textContent = 'LOADING RESOURCES';
+                } else if (progress > 10) {
+                    statusText.textContent = 'CONNECTING';
+                }
+                
+                // Continue updating until 100%
+                if (progress < 100) {
+                    setTimeout(updateProgress, 300); // Slower updates
+                } else {
+                    // When progress reaches 100%, notify the main process
+                    statusText.textContent = 'READY';
+                    
+                    // If electron API is available, notify it that splash is done
+                    if (window.electronAPI && window.electronAPI.splashScreenReady) {
+                        console.log('Splash screen ready, notifying main process');
+                        // Add a delay before notifying ready
+                        setTimeout(() => {
+                            window.electronAPI.splashScreenReady();
+                        }, 1000);
+                    } else {
+                        console.error('electronAPI not available');
+                    }
+                }
+            }
+        }
+        /* IPC Listeners moved inside window.electronAPI check */
+
+        // Start progress animation with a slight delay
+        setTimeout(updateProgress, 500);
+    </script>
+</body>
+</html>

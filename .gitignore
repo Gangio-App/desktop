@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.exe
+*.dmg
+*.deb
+*.rpm
+*.AppImage
+*.tar.gz
+*.zip
+*.7z
+*.rar
+*.bat

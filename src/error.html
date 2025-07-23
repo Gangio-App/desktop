@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gangio - Connection Error</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #111827;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .error-container {
+            max-width: 600px;
+            padding: 40px;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+        
+        .error-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #ff4d4d;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #34d399;
+        }
+        
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .retry-button {
+            background: linear-gradient(90deg, #14b8a6, #34d399);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            margin-top: 20px;
+        }
+        
+        .retry-button:hover {
+            background: linear-gradient(90deg, #0d9488, #10b981);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h1>Connection Error</h1>
+        <p>We're having trouble connecting to Gangio servers. This could be due to:</p>
+        <ul style="text-align: left; margin-bottom: 20px;">
+            <li>Your internet connection</li>
+            <li>Gangio servers being temporarily unavailable</li>
+            <li>A firewall or network restriction</li>
+        </ul>
+        <p>Please check your connection and try again.</p>
+        <button id="retry-button" class="retry-button">Retry Connection</button>
+    </div>
+
+    <script>
+        // Add event listener to retry button
+        document.getElementById('retry-button').addEventListener('click', () => {
+            // Reload the app
+            if (window.electronAPI) {
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+</html>

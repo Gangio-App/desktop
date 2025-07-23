@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gangio Updated</title>
+  <style>
+    body {
+      background: #0f0f13;
+      color: white;
+      font-family: Inter, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h1 {
+      color: #34d399;
+    }
+    .changelog {
+      max-width: 600px;
+      margin-top: 20px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+    }
+    button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: #14b8a6;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 Update Complete</h1>
+  <p>Your Gangio app has been successfully updated!</p>
+  <div class="changelog">
+    <p><strong>What's New:</strong></p>
+    <ul>
+      <li>🚀 Improved performance and stability</li>
+      <li>🛠 Bug fixes in voice chat</li>
+      <li>🎨 New splash screen visuals</li>
+    </ul>
+  </div>
+  <button onclick="continueApp()">Continue</button>
+
+  <script>
+    function continueApp() {
+      window.location = "https://gangio.pro/login"; // Or trigger navigation via IPC
+    }
+  </script>
+</body>
+</html>

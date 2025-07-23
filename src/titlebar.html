@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gangio Titlebar</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background-color: transparent;
+        }
+        
+        #titlebar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 32px;
+            background: linear-gradient(90deg, #121212, #1e1e1e);
+            color: #fff;
+            -webkit-app-region: drag;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(20, 184, 166, 0.3); /* Teal accent */
+            animation: subtle-glow 8s ease-in-out infinite;
+        }
+        
+        @keyframes subtle-glow {
+            0% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 0 2px 12px rgba(20, 184, 166, 0.15); }
+            100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+        }
+        
+        /* Glassmorphic effect */
+        #titlebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(52, 211, 153, 0.05), rgba(20, 184, 166, 0.02)); /* Emerald to teal gradient */
+            z-index: 0;
+        }
+        
+        .titlebar-left {
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .titlebar-logo {
+            height: 22px;
+            width: auto;
+            margin-right: 10px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 3px rgba(20, 184, 166, 0.5)); /* Teal glow */
+        }
+        
+        .titlebar-title {
+            font-family: 'Tiny5', sans-serif;
+            font-size: 16px;
+            color: #fff;
+            margin-left: 10px;
+            text-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
+            display: flex;
+            align-items: center;
+        }
+        
+        .titlebar-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            filter: drop-shadow(0 0 5px rgba(52, 211, 153, 0.5));
+        }
+        
+        .titlebar-controls {
+            display: flex;
+            -webkit-app-region: no-drag;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .titlebar-button {
+            width: 46px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Button hover effect - slide up */
+        .titlebar-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(52, 211, 153, 0.1), rgba(20, 184, 166, 0.05)); /* Emerald to teal gradient */
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+        }
+        
+        .titlebar-button:hover::before {
+            transform: translateY(0);
+        }
+        
+        /* Button hover states */
+        .titlebar-button:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .titlebar-button.close:hover {
+            background-color: rgba(232, 17, 35, 0.9);
+        }
+        
+        /* Button icons */
+        .titlebar-icon {
+            width: 10px;
+            height: 10px;
+            stroke: rgba(255, 255, 255, 0.8);
+            fill: rgba(255, 255, 255, 0.8);
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 0 2px rgba(52, 211, 153, 0.4)); /* Emerald glow */
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .titlebar-button:hover .titlebar-icon {
+            stroke: rgba(255, 255, 255, 1);
+            fill: rgba(255, 255, 255, 1);
+            filter: drop-shadow(0 0 3px rgba(52, 211, 153, 0.6)); /* Enhanced glow on hover */
+        }
+        
+        .titlebar-button:active .titlebar-icon {
+            transform: scale(0.85);
+        }
+        
+        /* Close button special styling */
+        #close-btn .titlebar-icon {
+            stroke-width: 1.5;
+        }
+        
+        #close-btn:hover .titlebar-icon {
+            filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+        }
+        
+        /* Particle container */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+        
+        /* Particle element */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+        }
+        
+        /* Settings Modal Styles removed - now using separate window */
+
+        #update-notification-area {
+            display: none; /* Hidden by default */
+            align-self: center; /* Vertically align with other buttons */
+            margin-right: 12px; /* Space before next button */
+            padding: 0 10px; /* Some horizontal padding */
+            color: #86efac; /* Light green - good contrast on dark titlebar */
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 28px; /* Adjust for nice vertical fit */
+            height: 28px;      /* Match line-height */
+            border-radius: 4px;
+            cursor: default;   /* Default cursor */
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        #update-notification-area.clickable:hover {
+            background-color: rgba(52, 211, 153, 0.2); /* Tealish hover when clickable */
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle container for animations -->
+    <div class="particles-container" id="particles-container"></div>
+    
+    <!-- No settings modal here - moved to separate window -->
+    
+    <!-- Titlebar -->
+    <div id="titlebar">
+        <div class="titlebar-left">
+            <div class="titlebar-title"><img src="../resources/build/png/16x16.png" alt="" class="titlebar-icon"> Gangio</div>
+        </div>
+        <div class="titlebar-controls">
+            <div id="update-notification-area"></div> <!-- Update notification area -->
+            <!-- <button id="settings-btn" class="titlebar-button" title="Settings">
+                <svg class="titlebar-icon" viewBox="0 0 24 24" width="18" height="18" style="width: 18px; height: 18px;">
+                    <path d="M12 15.5C14.21 15.5 16 13.71 16 11.5C16 9.29 14.21 7.5 12 7.5C9.79 7.5 8 9.29 8 11.5C8 13.71 9.79 15.5 12 15.5ZM19.43 12.97C19.47 12.65 19.5 12.33 19.5 12C19.5 11.67 19.47 11.34 19.43 11L21.54 9.37C21.73 9.22 21.78 8.95 21.66 8.73L19.66 5.27C19.54 5.05 19.27 4.96 19.05 5.05L16.56 6.05C16.04 5.66 15.5 5.32 14.87 5.07L14.5 2.42C14.46 2.18 14.25 2 14 2H10C9.75 2 9.54 2.18 9.5 2.42L9.13 5.07C8.5 5.32 7.96 5.66 7.44 6.05L4.95 5.05C4.73 4.96 4.46 5.05 4.34 5.27L2.34 8.73C2.21 8.95 2.27 9.22 2.46 9.37L4.57 11C4.53 11.34 4.5 11.67 4.5 12C4.5 12.33 4.53 12.65 4.57 12.97L2.46 14.63C2.27 14.78 2.21 15.05 2.34 15.27L4.34 18.73C4.46 18.95 4.73 19.03 4.95 18.95L7.44 17.94C7.96 18.34 8.5 18.68 9.13 18.93L9.5 21.58C9.54 21.82 9.75 22 10 22H14C14.25 22 14.46 21.82 14.5 21.58L14.87 18.93C15.5 18.67 16.04 18.34 16.56 17.94L19.05 18.95C19.27 19.03 19.54 18.95 19.66 18.73L21.66 15.27C21.78 15.05 21.73 14.78 21.54 14.63L19.43 12.97ZM12 13.5C10.9 13.5 10 12.6 10 11.5C10 10.4 10.9 9.5 12 9.5C13.1 9.5 14 10.4 14 11.5C14 12.6 13.1 13.5 12 13.5Z" fill="currentColor"></path>
+                </svg>
+            </button> -->
+            <button id="minimize-btn" class="titlebar-button" title="Minimize">
+                <svg class="titlebar-icon" viewBox="0 0 10 1">
+                    <rect width="10" height="1"></rect>
+                </svg>
+            </button>
+            <button id="maximize-btn" class="titlebar-button" title="Maximize">
+                <svg class="titlebar-icon" viewBox="0 0 10 10">
+                    <rect width="10" height="10" fill="none" stroke="currentColor" stroke-width="1"></rect>
+                </svg>
+            </button>
+            <button id="close-btn" class="titlebar-button close" title="Close (Minimizes to Tray)">
+                <svg class="titlebar-icon" viewBox="0 0 10 10">
+                    <path d="M1,1 L9,9 M9,1 L1,9" stroke="currentColor" stroke-width="1.5" fill="none"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Auto-detect language and load translations
+        const lang = (navigator.language || navigator.userLanguage).toLowerCase().startsWith('tr') ? 'tr' : 'en';
+        fetch(`locales/${lang}.json`)
+            .then(response => response.json())
+            .then(strings => {
+                document.querySelector('.titlebar-title').innerHTML = `<img src="../resources/build/png/16x16.png" alt="" class="titlebar-icon"> Gangio`;
+                // You can add more replacements if you have more visible text
+            });
+        // Get window control buttons
+        const minimizeBtn = document.getElementById('minimize-btn');
+        const maximizeBtn = document.getElementById('maximize-btn');
+        const closeBtn = document.getElementById('close-btn');
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsModal = document.getElementById('settings-modal');
+        const closeSettingsBtn = document.getElementById('close-settings-btn');
+        const particlesContainer = document.getElementById('particles-container');
+        
+        // Settings checkboxes
+        const startMinimizedCheckbox = document.getElementById('start-minimized');
+        const minimizeToTrayCheckbox = document.getElementById('minimize-to-tray');
+        const launchOnStartupCheckbox = document.getElementById('launch-on-startup');
+        const checkForUpdatesBtn = document.getElementById('check-for-updates-btn');
+        const appVersionElement = document.getElementById('app-version');
+        const updateNotificationArea = document.getElementById('update-notification-area');
+        let updateDownloadedInfo = null; // To store downloaded update info for the click handler
+        
+        // Particle animation function
+        function createParticles(event, button) {
+            // Get button colors based on which button was clicked
+            let particleColors, particleGlow;
+            if (button.id === 'close-btn') {
+                particleColors = ['#ff4d4d', '#ff6666', '#ff8080', '#ff9999', '#ffb3b3'];
+                particleGlow = 'rgba(255, 77, 77, 0.8)';
+            } else if (button.id === 'minimize-btn') {
+                particleColors = ['#34d399', '#3ee6ad', '#48f0b6', '#5cf9bf', '#70ffc8'];
+                particleGlow = 'rgba(52, 211, 153, 0.8)';
+            } else {
+                particleColors = ['#14b8a6', '#16cbb8', '#18dfca', '#1af2dc', '#1cffee'];
+                particleGlow = 'rgba(20, 184, 166, 0.8)';
+            }
+            
+            // Get button position for particle origin
+            const rect = button.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            
+            // Create a burst effect
+            const burstElement = document.createElement('div');
+            burstElement.style.position = 'absolute';
+            burstElement.style.left = `${x}px`;
+            burstElement.style.top = `${y}px`;
+            burstElement.style.width = '4px';
+            burstElement.style.height = '4px';
+            burstElement.style.borderRadius = '50%';
+            burstElement.style.backgroundColor = particleColors[0];
+            burstElement.style.boxShadow = `0 0 20px 4px ${particleGlow}`;
+            burstElement.style.zIndex = '9999';
+            burstElement.style.transform = 'scale(0)';
+            burstElement.style.transition = 'transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.3s ease';
+            particlesContainer.appendChild(burstElement);
+            
+            // Animate the burst
+            setTimeout(() => {
+                burstElement.style.transform = 'scale(15)';
+                burstElement.style.opacity = '0';
+                setTimeout(() => {
+                    particlesContainer.removeChild(burstElement);
+                }, 300);
+            }, 0);
+            
+            // Create particles
+            const particleCount = 25; // Increased particle count
+            for (let i = 0; i < particleCount; i++) {
+                // Create particle element
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random size between 3 and 10px
+                const size = Math.random() * 7 + 3;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random color from the color array
+                const color = particleColors[Math.floor(Math.random() * particleColors.length)];
+                particle.style.background = `radial-gradient(circle, ${color} 0%, rgba(255,255,255,0) 70%)`;
+                particle.style.boxShadow = `0 0 ${size}px ${size/2}px ${color}`;
+                
+                // Set initial position at button center
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                
+                // Add to container
+                particlesContainer.appendChild(particle);
+                
+                // Animate the particle
+                const angle = Math.random() * Math.PI * 2; // Random angle
+                const speed = Math.random() * 100 + 70; // Increased random speed
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+                const lifetime = Math.random() * 800 + 400; // Increased lifetime
+                
+                // Add some gravity effect
+                const gravity = 0.1;
+                let vxStart = vx;
+                let vyStart = vy;
+                
+                // Start animation
+                let startTime = null;
+                
+                function animateParticle(timestamp) {
+                    if (!startTime) startTime = timestamp;
+                    const elapsed = timestamp - startTime;
+                    const progress = elapsed / lifetime;
+                    
+                    if (progress < 1) {
+                        // Update velocity with gravity
+                        vyStart += gravity;
+                        
+                        // Update position with easing
+                        const easeOutProgress = 1 - Math.pow(1 - progress, 3); // Cubic ease out
+                        const newX = x + vx * easeOutProgress;
+                        const newY = y + vy * easeOutProgress + (0.5 * gravity * easeOutProgress * easeOutProgress * 100);
+                        
+                        particle.style.left = `${newX}px`;
+                        particle.style.top = `${newY}px`;
+                        
+                        // Add rotation
+                        const rotation = progress * 360 * (Math.random() > 0.5 ? 1 : -1);
+                        particle.style.transform = `rotate(${rotation}deg) scale(${1 - progress * 0.5})`;
+                        
+                        // Update opacity - fade in then out with cubic easing
+                        let opacity;
+                        if (progress < 0.2) {
+                            opacity = Math.pow(progress * 5, 2); // Quadratic ease in
+                        } else {
+                            opacity = Math.pow(1 - ((progress - 0.2) / 0.8), 2); // Quadratic ease out
+                        }
+                        particle.style.opacity = opacity;
+                        
+                        // Continue animation
+                        requestAnimationFrame(animateParticle);
+                    } else {
+                        // Remove particle when animation is complete
+                        particlesContainer.removeChild(particle);
+                    }
+                }
+                
+                requestAnimationFrame(animateParticle);
+            }
+        }
+
+        // Settings modal functions
+        function openSettingsModal() {
+            settingsModal.style.display = 'block';
+            
+            // Load current settings
+            if (window.electronAPI) {
+                window.electronAPI.getTrayPreferences().then(prefs => {
+                    startMinimizedCheckbox.checked = prefs.startMinimized;
+                    minimizeToTrayCheckbox.checked = prefs.minimizeToTray;
+                    launchOnStartupCheckbox.checked = prefs.launchOnStartup;
+                });
+                
+                // Get app version
+                window.electronAPI.getAppVersion().then(version => {
+                    appVersionElement.textContent = version;
+                });
+            }
+        }
+        
+        function closeSettingsModal() {
+            settingsModal.style.display = 'none';
+        }
+        
+        // Save settings when checkboxes change
+        function saveSettings(key, value) {
+            if (window.electronAPI) {
+                window.electronAPI.setTrayPreference(key, value);
+            }
+        }
+        
+        // Function to update maximize button icon
+        function updateMaximizeButton(isMaximized) {
+            if (isMaximized) {
+                // Restore icon (two overlapping squares)
+                maximizeBtn.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10"><path d="M2,2v6h6V2H2z M7,7H3V3h4V7z M1,1v3h1V2h2V1H1z"/></svg>';
+                maximizeBtn.title = 'Restore';
+            } else {
+                // Maximize icon (single square)
+                maximizeBtn.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10"><path d="M0,0v10h10V0H0z M9,9H1V1h8V9z"/></svg>';
+                maximizeBtn.title = 'Maximize';
+            }
+        }
+        
+        // Add event listeners for window controls
+        if (window.electronAPI) {
+            minimizeBtn.addEventListener('click', (event) => {
+                createParticles(event, minimizeBtn);
+                window.electronAPI.minimizeWindow();
+            });
+
+            maximizeBtn.addEventListener('click', (event) => {
+                createParticles(event, maximizeBtn);
+                window.electronAPI.maximizeWindow();
+            });
+
+            closeBtn.addEventListener('click', (event) => {
+                createParticles(event, closeBtn);
+                window.electronAPI.closeWindow();
+            });
+            
+            // Settings button
+            settingsBtn.addEventListener('click', (event) => {
+                createParticles(event, settingsBtn);
+                openSettingsModal();
+            });
+
+            // Listen for update status from main process
+            window.electronAPI.on('update-available-from-main', (info) => {
+                if (updateNotificationArea) {
+                    console.log('Titlebar received update-available-from-main:', info);
+                    updateNotificationArea.textContent = `Downloading v${info.version}...`;
+                    updateNotificationArea.style.display = 'inline-block';
+                    updateNotificationArea.style.cursor = 'default';
+                    updateNotificationArea.classList.remove('clickable');
+                    updateNotificationArea.onclick = null; 
+                    updateDownloadedInfo = null;
+                }
+            });
+
+            window.electronAPI.on('update-downloaded-from-main', (info) => {
+                if (updateNotificationArea) {
+                    console.log('Titlebar received update-downloaded-from-main:', info);
+                    updateNotificationArea.textContent = `Update v${info.version} ready! Click to install`;
+                    updateNotificationArea.style.display = 'inline-block';
+                    updateNotificationArea.style.cursor = 'pointer';
+                    updateNotificationArea.classList.add('clickable');
+                    updateDownloadedInfo = info; 
+                    updateNotificationArea.onclick = () => {
+                        if (updateDownloadedInfo) {
+                            window.electronAPI.send('quit-and-install-update');
+                        }
+                    };
+                }
+            });
+
+            // Listen for maximized state changes
+            if (window.electronAPI.onMaximizedStateChanged) {
+                window.electronAPI.onMaximizedStateChanged((isMaximized) => {
+                    updateMaximizeButton(isMaximized);
+                });
+                
+                // Check initial state (when window loads)
+                setTimeout(() => {
+                    // We use a timeout to ensure the window has fully initialized
+                    if (window.electronAPI.isWindowMaximized) {
+                        window.electronAPI.isWindowMaximized().then(isMaximized => {
+                            updateMaximizeButton(isMaximized);
+                        }).catch(err => {
+                            console.error('Error getting initial maximize state:', err);
+                        });
+                    }
+                }, 200);
+            }
+        }
+    </script>
+</body>
+</html>
